@@ -10,6 +10,11 @@ let rec sift n (Cons (x, f)) =
   and second = if x mod n = 0 then tail (f ()) else f ()
   in Cons (first, fun () -> sift n second)
 
+(* 
+# nthseq (2922 + 3000) primes;;
+- : int = 58481
+*)
+
 let rec sieve (Cons (x, f)) = Cons (x, fun () -> sieve (sift x (f())))
 let primes = sieve (from 2)
 let rec nthseq n (Cons (x, f)) =
