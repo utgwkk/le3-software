@@ -8,7 +8,7 @@ s k k 1
 = k 1 (k 1)
 = 1
 
-k (s k k)
+`k (s k k) x y` always returns y.
 *)
 let s x y z = x z (y z)
 let k x y = x

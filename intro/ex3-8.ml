@@ -8,4 +8,5 @@
  * *)
 
 let rec powi x n result =
-  if n = 0 then result else powi x (n - 1) (x * result)
+  if n = 0 then result
+  else powi x (n - 1) (x * result)

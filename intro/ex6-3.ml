@@ -12,7 +12,7 @@ let rec monus m n =
 (* Constants for testing *)
 let zero = Zero
 let one = OneMoreThan zero
-let two = OneMoreThan (one)
-let three = OneMoreThan (two)
-let four = OneMoreThan (three)
-let five = OneMoreThan (four)
+let two = OneMoreThan one
+let three = OneMoreThan two
+let four = OneMoreThan three
+let five = OneMoreThan four
