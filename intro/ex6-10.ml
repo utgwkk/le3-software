@@ -11,3 +11,9 @@ let apply_either (f, g) s =
   match s with
     Left a -> f a
   | Right b -> g b
+
+(* 5. *)
+let either s =
+  match s with
+    Left f -> (fun x -> Left (f x))
+  | Right g -> (fun x -> Right (g x))
