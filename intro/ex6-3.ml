@@ -7,7 +7,7 @@ let rec monus m n =
   | OneMoreThan m' ->
       match n with
         Zero -> Some m
-      | OneMoreThan n' -> monus' m' n'
+      | OneMoreThan n' -> monus m' n'
 
 (* Constants for testing *)
 let zero = Zero
