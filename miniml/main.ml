@@ -28,12 +28,17 @@ let rec read_eval_print env =
     read_eval_print env
   )
 
-let initial_env = 
-  Environment.extend "i" (IntV 1)
-    (Environment.extend "v" (IntV 5) 
-       (Environment.extend "x" (IntV 10)
-          (Environment.extend "ii" (IntV 2)
-             (Environment.extend "iii" (IntV 3)
-                (Environment.extend "iv" (IntV 4) Environment.empty)))))
+let initial_env =
+  let rec extend env = function
+      [] -> env
+    | (name, value) :: rest -> extend (Environment.extend name value env) rest
+  in extend Environment.empty [
+      ("i", (IntV 1));
+      ("v", (IntV 5));
+      ("x", (IntV 10));
+      ("ii", (IntV 2));
+      ("iii", (IntV 3));
+      ("iv", (IntV 4));
+      ]
 
 let _ = read_eval_print initial_env
