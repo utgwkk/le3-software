@@ -24,6 +24,7 @@ Expr :
     e=IfExpr { e }
   | e=LetExpr { e }
   | e=LTExpr { e }
+  | e=EQExpr { e }
   | e=AndExpr { e }
   | e=FunExpr { e }
 
@@ -43,6 +44,10 @@ OrExpr :
 
 LTExpr : 
     l=PExpr LT r=PExpr { BinOp (Lt, l, r) }
+  | e=PExpr { e }
+
+EQExpr :
+    l=PExpr EQ r=PExpr { BinOp (Eq, l, r) }
   | e=PExpr { e }
 
 PExpr :
