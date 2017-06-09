@@ -7,6 +7,7 @@ open Syntax
 %token PLUS MULT LT AND OR
 %token LET IN EQ
 %token IF THEN ELSE TRUE FALSE
+%token RARROW FUN
 
 %token <int> INTV
 %token <Syntax.id> ID
@@ -49,7 +50,11 @@ PExpr :
   | e=MExpr { e }
 
 MExpr : 
-    l=MExpr MULT r=AExpr { BinOp (Mult, l, r) }
+    l=MExpr MULT r=AppExpr { BinOp (Mult, l, r) }
+  | e=AppExpr { e }
+
+AppExpr :
+    e1=AppExpr e2=AExpr { AppExp (e1, e2) }
   | e=AExpr { e }
 
 AExpr :
