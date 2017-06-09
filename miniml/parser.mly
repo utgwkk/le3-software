@@ -3,7 +3,6 @@ open Syntax
 %}
 
 %token LPAREN RPAREN SEMISEMI
-%token PLUS MULT LT
 %token PLUS MULT LT AND OR
 %token LET IN EQ
 %token IF THEN ELSE TRUE FALSE
@@ -23,10 +22,9 @@ toplevel :
 Expr :
     e=IfExpr { e }
   | e=LetExpr { e }
-  | e=LTExpr { e }
-  | e=EQExpr { e }
-  | e=AndExpr { e }
+  | e=OrExpr { e }
   | e=FunExpr { e }
+  | e=AppExpr { e }
 
 FunExpr :
     FUN x=ID RARROW body=Expr { FunExp (x, body) }
@@ -34,13 +32,17 @@ FunExpr :
 LetExpr :
     LET x=ID EQ e1=Expr IN e2=Expr { LetExp (x, e1, e2) }
 
-AndExpr :
-    l=OrExpr AND r=OrExpr { BinOp (And, l, r) }
-  | e=OrExpr { e }
-
 OrExpr :
-    l=OrExpr OR r=AppExpr { BinOp (Or, l, r) }
-  | e=AppExpr { e }
+    l=OrExpr OR r=AndExpr { BinOp (Or, l, r) }
+  | e=AndExpr { e }
+
+AndExpr :
+    l=AndExpr AND r=CmpExpr { BinOp (And, l, r) }
+  | e=CmpExpr { e }
+
+CmpExpr :
+    e=LTExpr { e }
+  | e=EQExpr { e }
 
 LTExpr : 
     l=PExpr LT r=PExpr { BinOp (Lt, l, r) }

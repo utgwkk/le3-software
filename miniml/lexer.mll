@@ -1,12 +1,14 @@
 {
 let reservedWords = [
   (* Keywords *)
+  ("and", Parser.AND);
   ("else", Parser.ELSE);
   ("false", Parser.FALSE);
   ("fun", Parser.FUN);
   ("if", Parser.IF);
   ("in", Parser.IN);
   ("let", Parser.LET);
+  ("or", Parser.OR);
   ("then", Parser.THEN);
   ("true", Parser.TRUE);
 ] 
