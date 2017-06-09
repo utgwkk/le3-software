@@ -12,4 +12,4 @@ s k k 1
 *)
 let s x y z = x z (y z)
 let k x y = x
-let i = s k k
+let i x = (s k k) x
