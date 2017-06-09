@@ -28,3 +28,11 @@ setup.log
 
 # ctags / etags
 _tags
+
+miniml
+._d/
+._ncdi/
+lexer.ml
+parser.ml
+parser.mli
+parser.automaton
