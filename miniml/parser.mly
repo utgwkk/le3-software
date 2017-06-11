@@ -39,8 +39,8 @@ AndExpr :
   | e=OrExpr { e }
 
 OrExpr :
-    l=OrExpr OR r=AndExpr { BinOp (Or, l, r) }
-  | e=AndExpr { e }
+    l=OrExpr OR r=AppExpr { BinOp (Or, l, r) }
+  | e=AppExpr { e }
 
 LTExpr : 
     l=PExpr LT r=PExpr { BinOp (Lt, l, r) }
