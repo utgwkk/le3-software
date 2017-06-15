@@ -18,6 +18,7 @@ open Syntax
 toplevel :
     e=Expr SEMISEMI { Exp e }
   | LET x=ID EQ e=Expr SEMISEMI { Decl (x, e) }
+  | LET x=ID e=LetFunExpr SEMISEMI { Decl (x, e) }
   | LET REC x=ID EQ FUN para=ID RARROW body=Expr SEMISEMI { RecDecl (x, para, FunExp(para, body)) }
 
 Expr :
@@ -28,10 +29,19 @@ Expr :
   | e=LetRecExpr { e }
 
 FunExpr :
-    FUN x=ID RARROW body=Expr { FunExp (x, body) }
+    FUN body=FunBodyExpr { body }
+
+FunBodyExpr :
+    x=ID RARROW body=Expr { FunExp (x, body) }
+  | x=ID e=FunBodyExpr { FunExp (x, e)}
 
 LetExpr :
     LET x=ID EQ e1=Expr IN e2=Expr { LetExp (x, e1, e2) }
+  | LET id=ID e1=LetFunExpr IN e2=Expr { LetExp (id, e1, e2) }
+
+LetFunExpr :
+    id=ID EQ body=Expr { FunExp (id, body) }
+  | id=ID e=LetFunExpr { FunExp (id, e) }
 
 LetRecExpr :
     LET REC x=ID EQ FUN para=ID RARROW body=Expr IN e=Expr { LetRecExp (x, para, body, e) }
