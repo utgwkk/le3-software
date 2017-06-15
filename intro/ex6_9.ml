@@ -10,7 +10,7 @@ let rec sift n (Cons (x, f)) =
   and second = if x mod n = 0 then tail (f ()) else f ()
   in Cons (first, fun () -> sift n second)
 
-(* 
+(*
 # nthseq (2922 + 3000) primes;;
 - : int = 58481
 *)

@@ -1,7 +1,7 @@
 (*
  * To calculate x^n, call this function like:
    # powi x n 1
-   
+
    for example:
    # powi 2 10 1
    - : int = 1024
