@@ -4,7 +4,7 @@ open Syntax
 
 %token LPAREN RPAREN SEMISEMI
 %token PLUS MULT LT AND OR
-%token LET IN EQ
+%token LET REC IN EQ
 %token IF THEN ELSE TRUE FALSE
 %token RARROW FUN
 
@@ -18,18 +18,23 @@ open Syntax
 toplevel :
     e=Expr SEMISEMI { Exp e }
   | LET x=ID EQ e=Expr SEMISEMI { Decl (x, e) }
+  | LET REC x=ID EQ FUN para=ID RARROW body=Expr SEMISEMI { RecDecl (x, para, FunExp(para, body)) }
 
 Expr :
     e=IfExpr { e }
   | e=LetExpr { e }
   | e=OrExpr { e }
   | e=FunExpr { e }
+  | e=LetRecExpr { e }
 
 FunExpr :
     FUN x=ID RARROW body=Expr { FunExp (x, body) }
 
 LetExpr :
     LET x=ID EQ e1=Expr IN e2=Expr { LetExp (x, e1, e2) }
+
+LetRecExpr :
+    LET REC x=ID EQ FUN para=ID RARROW body=Expr IN e=Expr { LetRecExp (x, para, body, e) }
 
 OrExpr :
     l=OrExpr OR r=AndExpr { LazyBinOp (Or, l, r) }
