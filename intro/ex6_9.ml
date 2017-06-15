@@ -1,3 +1,4 @@
+(* Infinite sequence. *)
 type 'a seq = Cons of 'a * (unit -> 'a seq)
 
 let head (Cons (x, _)) = x
@@ -5,6 +6,11 @@ let tail (Cons (_, f)) = f ()
 let rec take n s = if n = 0 then [] else head s :: take (n - 1) (tail s)
 let rec from n = Cons (n, fun () -> from (n + 1))
 
+(*
+ * If (head seq) mod n = 0, rewrite (head seq) to (head (f ())
+ * and (tail seq) to (tail (f ())).
+ * Therefore we can get an infinite natural number sequence except multiples of 3.
+ * *)
 let rec sift n (Cons (x, f)) =
   let first = if x mod n = 0 then head (f ()) else x
   and second = if x mod n = 0 then tail (f ()) else f ()
@@ -15,6 +21,7 @@ let rec sift n (Cons (x, f)) =
 - : int = 58481
 *)
 
+(* Implementation of Sieve of Eratosthenes. *)
 let rec sieve (Cons (x, f)) = Cons (x, fun () -> sieve (sift x (f())))
 let primes = sieve (from 2)
 let rec nthseq n (Cons (x, f)) =
