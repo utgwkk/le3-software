@@ -32,11 +32,11 @@ LetExpr :
     LET x=ID EQ e1=Expr IN e2=Expr { LetExp (x, e1, e2) }
 
 OrExpr :
-    l=OrExpr OR r=Expr { BinOp (Or, l, r) }
+    l=OrExpr OR r=AndExpr { LazyBinOp (Or, l, r) }
   | e=AndExpr { e }
 
 AndExpr :
-    l=AndExpr AND r=Expr { BinOp (And, l, r) }
+    l=AndExpr AND r=CmpExpr { LazyBinOp (And, l, r) }
   | e=CmpExpr { e }
 
 CmpExpr :

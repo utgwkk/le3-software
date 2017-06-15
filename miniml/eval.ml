@@ -33,7 +33,14 @@ let rec apply_prim op arg1 arg2 = match op, arg1, arg2 with
   | Or, BoolV b1, BoolV b2 -> BoolV (b1 || b2)
   | Or, _, _ -> err ("Both arguments must be boolean: ||")
 
-let rec eval_exp env = function
+let rec apply_prim_lazy op env exp1 exp2 =
+  let arg1 = eval_exp env exp1 in
+    match op, arg1 with
+      And, BoolV false -> BoolV false
+    | Or, BoolV true -> BoolV true
+    | _, _ -> eval_exp env exp2
+
+and eval_exp env = function
     Var x -> 
       (try Environment.lookup x env with 
         Environment.Not_bound -> err ("Variable not bound: " ^ x))
@@ -43,6 +50,8 @@ let rec eval_exp env = function
       let arg1 = eval_exp env exp1 in
       let arg2 = eval_exp env exp2 in
       apply_prim op arg1 arg2
+  | LazyBinOp (op, exp1, exp2) ->
+      apply_prim_lazy op env exp1 exp2
   | IfExp (exp1, exp2, exp3) ->
       let test = eval_exp env exp1 in
         (match test with
