@@ -1,5 +1,6 @@
 type nat = Zero | OneMoreThan of nat
 
+(* Convert nat to int. *)
 let rec int_of_nat = function
     Zero -> 0
   | OneMoreThan x -> 1 + int_of_nat x

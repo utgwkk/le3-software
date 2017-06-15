@@ -1,5 +1,7 @@
 (* 2. *)
-let jpy_to_usd jpy = (float_of_int jpy) /. 111.12
+let jpy_to_usd jpy =
+  let round x = (ceil (x *. 100. -. 0.5)) /. 100. in
+    round @@ (float_of_int jpy) /. 111.12
 
 (* 4. *)
 let capitalize str =
