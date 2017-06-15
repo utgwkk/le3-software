@@ -47,14 +47,13 @@ AndExpr :
 CmpExpr :
     e=LTExpr { e }
   | e=EQExpr { e }
+  | e=PExpr { e }
 
 LTExpr : 
     l=PExpr LT r=PExpr { BinOp (Lt, l, r) }
-  | e=PExpr { e }
 
 EQExpr :
     l=PExpr EQ r=PExpr { BinOp (Eq, l, r) }
-  | e=PExpr { e }
 
 PExpr :
     l=PExpr PLUS r=MExpr { BinOp (Plus, l, r) }
