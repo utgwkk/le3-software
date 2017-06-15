@@ -24,7 +24,6 @@ Expr :
   | e=LetExpr { e }
   | e=OrExpr { e }
   | e=FunExpr { e }
-  | e=AppExpr { e }
 
 FunExpr :
     FUN x=ID RARROW body=Expr { FunExp (x, body) }
@@ -33,11 +32,11 @@ LetExpr :
     LET x=ID EQ e1=Expr IN e2=Expr { LetExp (x, e1, e2) }
 
 OrExpr :
-    l=OrExpr OR r=AndExpr { BinOp (Or, l, r) }
+    l=OrExpr OR r=Expr { BinOp (Or, l, r) }
   | e=AndExpr { e }
 
 AndExpr :
-    l=AndExpr AND r=CmpExpr { BinOp (And, l, r) }
+    l=AndExpr AND r=Expr { BinOp (And, l, r) }
   | e=CmpExpr { e }
 
 CmpExpr :
