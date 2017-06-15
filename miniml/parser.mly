@@ -73,7 +73,16 @@ AExpr :
   | TRUE   { BLit true }
   | FALSE  { BLit false }
   | i=ID   { Var i }
+  | LPAREN e=BiOper RPAREN { e }
   | LPAREN e=Expr RPAREN { e }
+
+BiOper :
+    PLUS { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Plus, Var ("__lhs__"), Var ("__rhs__")))) }
+  | MULT { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Mult, Var ("__lhs__"), Var ("__rhs__")))) }
+  | LT { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Lt, Var ("__lhs__"), Var ("__rhs__")))) }
+  | EQ { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Eq, Var ("__lhs__"), Var ("__rhs__")))) }
+  | AND { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (And, Var ("__lhs__"), Var ("__rhs__")))) }
+  | OR { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Or, Var ("__lhs__"), Var ("__rhs__")))) }
 
 IfExpr :
     IF c=Expr THEN t=Expr ELSE e=Expr { IfExp (c, t, e) }
