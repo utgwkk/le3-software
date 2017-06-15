@@ -1,5 +1,11 @@
 type ('a, 'b) sum = Left of 'a | Right of 'b
 
+(*
+   val union : 'a * ('b, 'c) sum -> ('a * 'b, 'a * 'c) sum = <fun>
+   val apply_either : ('a -> 'b) * ('c -> 'b) -> ('a, 'c) sum -> 'b = <fun>
+   val either : ('a -> 'b, 'a -> 'c) sum -> 'a -> ('b, 'c) sum = <fun>
+ *)
+
 (* 1. *)
 let union (a, s) =
   match s with
