@@ -8,6 +8,7 @@ open Syntax
 %token IF THEN ELSE TRUE FALSE
 %token RARROW FUN DFUN
 %token CONS LLPAREN RLPAREN
+%token MATCH WITH PIPE
 
 %token <int> INTV
 %token <Syntax.id> ID
@@ -23,12 +24,21 @@ toplevel :
   | LET REC x=ID EQ FUN para=ID RARROW body=Expr SEMISEMI { RecDecl (x, para, FunExp(para, body)) }
 
 Expr :
-    e=IfExpr { e }
-  | e=LetExpr { e }
-  | e=OrExpr { e }
+    e=LetExpr { e }
   | e=FunExpr { e }
   | e=DFunExpr { e }
   | e=LetRecExpr { e }
+  | e=MatchWithExpr { e }
+
+MatchWithExpr :
+    MATCH target=Expr WITH
+    LLPAREN RLPAREN RARROW e1=Expr
+    PIPE head=ID CONS tail=ID RARROW e2=Expr { MatchExp (target, head, tail, e1, e2) }
+  | e=IfExpr { e }
+
+IfExpr :
+    IF c=Expr THEN t=Expr ELSE e=Expr { IfExp (c, t, e) }
+  | e=OrExpr { e }
 
 FunExpr :
     FUN body=FunBodyExpr { body }
@@ -104,6 +114,3 @@ BiOper :
   | EQ { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Eq, Var ("__lhs__"), Var ("__rhs__")))) }
   | AND { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (And, Var ("__lhs__"), Var ("__rhs__")))) }
   | OR { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Or, Var ("__lhs__"), Var ("__rhs__")))) }
-
-IfExpr :
-    IF c=Expr THEN t=Expr ELSE e=Expr { IfExp (c, t, e) }

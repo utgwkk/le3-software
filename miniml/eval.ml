@@ -29,7 +29,7 @@ let rec apply_prim op arg1 arg2 = match op, arg1, arg2 with
   | Minus, _, _ -> err ("Both arguments must be integer: -")
   | Mult, IntV i1, IntV i2 -> IntV (i1 * i2)
   | Mult, _, _ -> err ("Both arguments must be integer: *")
-  | Cons, ListV _, ListV _ -> err ("Sorry, you cannot construct list of list.")
+  | Cons, ListV l1, ListV l2 -> ListV ((ListV l1) :: l2)
   | Cons, x, ListV [] -> ListV [x]
   | Cons, IntV x, ListV ((IntV _) :: _ as xs) -> ListV ((IntV x) :: xs)
   | Cons, _, ListV ((IntV _) :: _) -> err ("The left argument must be integer: ::")
@@ -99,6 +99,15 @@ and eval_exp env = function
         Environment.extend id (ProcV (para, exp1, dummyenv)) !env in
       dummyenv := newenv;
       eval_exp dummyenv exp2
+  | MatchExp (target, head, tail, exp1, exp2) -> (
+      let target_value = eval_exp env target
+      in match target_value with
+        ListV [] -> eval_exp env exp1
+      | ListV (x :: xs) -> let newenv =
+          ref (Environment.extend head x (Environment.extend tail (ListV xs) !env))
+        in eval_exp newenv exp2
+      | _ -> err ("Pattern match target must be list")
+  )
 
 let eval_decl env = function
     Exp e -> let v = eval_exp (ref env) e in ("-", env, v)

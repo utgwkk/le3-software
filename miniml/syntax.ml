@@ -16,6 +16,7 @@ type exp =
   | DFunExp of id * exp
   | AppExp of exp * exp
   | LetRecExp of id * id * exp * exp
+  | MatchExp of exp * id * id * exp * exp
 
 type program = 
     Exp of exp

@@ -9,10 +9,12 @@ let reservedWords = [
   ("if", Parser.IF);
   ("in", Parser.IN);
   ("let", Parser.LET);
+  ("match", Parser.MATCH);
   ("or", Parser.OR);
   ("rec", Parser.REC);
   ("then", Parser.THEN);
   ("true", Parser.TRUE);
+  ("with", Parser.WITH)
 ] 
 
 let comment_nested = ref 0
@@ -34,6 +36,7 @@ rule main = parse
 | "]" { Parser.RLPAREN }
 | "::" { Parser.CONS }
 | ";;" { Parser.SEMISEMI }
+| "|" { Parser.PIPE }
 | "+" { Parser.PLUS }
 | "-" { Parser.MINUS }
 | "*" { Parser.MULT }
