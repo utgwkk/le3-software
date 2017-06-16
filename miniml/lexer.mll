@@ -34,6 +34,7 @@ rule main = parse
 | ")" { Parser.RPAREN }
 | "[" { Parser.LLPAREN }
 | "]" { Parser.RLPAREN }
+| ";" { Parser.SEMI }
 | "::" { Parser.CONS }
 | ";;" { Parser.SEMISEMI }
 | "|" { Parser.PIPE }

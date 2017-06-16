@@ -7,7 +7,7 @@ open Syntax
 %token LET REC IN EQ
 %token IF THEN ELSE TRUE FALSE
 %token RARROW FUN DFUN
-%token CONS LLPAREN RLPAREN
+%token CONS LLPAREN RLPAREN SEMI
 %token MATCH WITH PIPE
 
 %token <int> INTV
@@ -102,9 +102,14 @@ AExpr :
   | TRUE   { BLit true }
   | FALSE  { BLit false }
   | LLPAREN RLPAREN { LLit [] }
+  | LLPAREN e=ListExpr RLPAREN { e }
   | i=ID   { Var i }
   | LPAREN e=BiOper RPAREN { e }
   | LPAREN e=Expr RPAREN { e }
+
+ListExpr :
+    e=Expr SEMI l=ListExpr { BinOp (Cons, e, l) }
+  | e=Expr { BinOp (Cons, e, LLit []) }
 
 BiOper :
     PLUS { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Plus, Var ("__lhs__"), Var ("__rhs__")))) }
