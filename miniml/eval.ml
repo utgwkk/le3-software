@@ -100,13 +100,16 @@ and eval_exp env = function
       dummyenv := newenv;
       eval_exp dummyenv exp2
   | MatchExp (target, head, tail, exp1, exp2) -> (
-      let target_value = eval_exp env target
-      in match target_value with
-        ListV [] -> eval_exp env exp1
-      | ListV (x :: xs) -> let newenv =
-          ref (Environment.extend head x (Environment.extend tail (ListV xs) !env))
-        in eval_exp newenv exp2
-      | _ -> err ("Pattern match target must be list")
+      if head = tail then
+        err ("You cannnot use the same variable with head and tail")
+      else 
+        let target_value = eval_exp env target
+        in match target_value with
+            ListV [] -> eval_exp env exp1
+          | ListV (x :: xs) ->let newenv =
+              ref (Environment.extend head x (Environment.extend tail (ListV xs) !env))
+            in eval_exp newenv exp2
+          | _ -> err ("Pattern match target must be list")
   )
 
 let eval_decl env = function
