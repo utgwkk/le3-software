@@ -30,6 +30,9 @@ rule main = parse
 
 | "(" { Parser.LPAREN }
 | ")" { Parser.RPAREN }
+| "[" { Parser.LLPAREN }
+| "]" { Parser.RLPAREN }
+| "::" { Parser.CONS }
 | ";;" { Parser.SEMISEMI }
 | "+" { Parser.PLUS }
 | "-" { Parser.MINUS }

@@ -3,6 +3,7 @@ open Syntax
 type exval = 
     IntV of int
   | BoolV of bool
+  | ListV of exval list
   | DProcV of id * exp
   | ProcV of id * exp * dnval Environment.t ref
 and dnval = exval
@@ -15,6 +16,7 @@ let err s = raise (Error s)
 let rec string_of_exval = function
     IntV i -> string_of_int i
   | BoolV b -> string_of_bool b
+  | ListV l -> "[" ^ (String.concat "; " (List.map string_of_exval l)) ^ "]"
   | ProcV (name, _, _) -> "<function " ^ name ^ ">"
   | DProcV (name, _) -> "<dynamic function " ^ name ^ ">"
 
@@ -27,6 +29,17 @@ let rec apply_prim op arg1 arg2 = match op, arg1, arg2 with
   | Minus, _, _ -> err ("Both arguments must be integer: -")
   | Mult, IntV i1, IntV i2 -> IntV (i1 * i2)
   | Mult, _, _ -> err ("Both arguments must be integer: *")
+  | Cons, ListV _, ListV _ -> err ("Sorry, you cannot construct list of list.")
+  | Cons, x, ListV [] -> ListV [x]
+  | Cons, IntV x, ListV ((IntV _) :: _ as xs) -> ListV ((IntV x) :: xs)
+  | Cons, _, ListV ((IntV _) :: _) -> err ("The left argument must be integer: ::")
+  | Cons, BoolV x, ListV ((BoolV _) :: _ as xs) -> ListV ((BoolV x) :: xs)
+  | Cons, _, ListV ((BoolV _) :: _) -> err ("The left argument must be boolean: ::")
+  | Cons, (DProcV _ as p), ListV ((DProcV _) :: _ as xs) -> ListV (p :: xs)
+  | Cons, _, ListV ((DProcV _) :: _) -> err ("The left argument must be dynamic function: ::")
+  | Cons, (ProcV _ as p), ListV ((ProcV _) :: _ as xs) -> ListV (p :: xs)
+  | Cons, _, ListV ((ProcV _) :: _) -> err ("The left argument must be non-dynamic function: ::")
+  | Cons, _, _ -> err ("The right argument must be a list: ::")
   | Lt, IntV i1, IntV i2 -> BoolV (i1 < i2)
   | Lt, _, _ -> err ("Both arguments must be integer: <")
   | Eq, IntV i1, IntV i2 -> BoolV (i1 = i2)
@@ -50,6 +63,7 @@ and eval_exp env = function
         Environment.Not_bound -> err ("Variable not bound: " ^ x))
   | ILit i -> IntV i
   | BLit b -> BoolV b
+  | LLit l -> ListV (List.map (eval_exp env) l)
   | BinOp (op, exp1, exp2) -> 
       let arg1 = eval_exp env exp1 in
       let arg2 = eval_exp env exp2 in

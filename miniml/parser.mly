@@ -7,6 +7,7 @@ open Syntax
 %token LET REC IN EQ
 %token IF THEN ELSE TRUE FALSE
 %token RARROW FUN DFUN
+%token CONS LLPAREN RLPAREN
 
 %token <int> INTV
 %token <Syntax.id> ID
@@ -61,13 +62,17 @@ AndExpr :
 CmpExpr :
     e=LTExpr { e }
   | e=EQExpr { e }
-  | e=PExpr { e }
+  | e=ConsExpr { e }
 
 LTExpr : 
-    l=PExpr LT r=PExpr { BinOp (Lt, l, r) }
+    l=ConsExpr LT r=ConsExpr { BinOp (Lt, l, r) }
 
 EQExpr :
-    l=PExpr EQ r=PExpr { BinOp (Eq, l, r) }
+    l=ConsExpr EQ r=ConsExpr { BinOp (Eq, l, r) }
+
+ConsExpr :
+    l=PExpr CONS r=ConsExpr { BinOp (Cons, l, r) }
+  | e=PExpr { e }
 
 PExpr :
     l=PExpr PLUS r=MExpr { BinOp (Plus, l, r) }
@@ -86,6 +91,7 @@ AExpr :
     i=INTV { ILit i }
   | TRUE   { BLit true }
   | FALSE  { BLit false }
+  | LLPAREN RLPAREN { LLit [] }
   | i=ID   { Var i }
   | LPAREN e=BiOper RPAREN { e }
   | LPAREN e=Expr RPAREN { e }
