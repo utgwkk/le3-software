@@ -2,16 +2,19 @@
 let reservedWords = [
   (* Keywords *)
   ("and", Parser.AND);
+  ("dfun", Parser.DFUN);
   ("else", Parser.ELSE);
   ("false", Parser.FALSE);
   ("fun", Parser.FUN);
   ("if", Parser.IF);
   ("in", Parser.IN);
   ("let", Parser.LET);
+  ("match", Parser.MATCH);
   ("or", Parser.OR);
   ("rec", Parser.REC);
   ("then", Parser.THEN);
   ("true", Parser.TRUE);
+  ("with", Parser.WITH)
 ] 
 
 let comment_nested = ref 0
@@ -29,7 +32,12 @@ rule main = parse
 
 | "(" { Parser.LPAREN }
 | ")" { Parser.RPAREN }
+| "[" { Parser.LLPAREN }
+| "]" { Parser.RLPAREN }
+| ";" { Parser.SEMI }
+| "::" { Parser.CONS }
 | ";;" { Parser.SEMISEMI }
+| "|" { Parser.PIPE }
 | "+" { Parser.PLUS }
 | "-" { Parser.MINUS }
 | "*" { Parser.MULT }
