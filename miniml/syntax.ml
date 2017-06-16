@@ -1,4 +1,12 @@
 (* ML interpreter / type reconstruction *)
+type ty =
+    TyInt
+  | TyBool
+
+let pp_ty = function
+    TyInt -> print_string "int"
+  | TyBool -> print_string "bool"
+
 type id = string
 
 type binOp = Plus | Minus | Mult | Lt | Eq | And | Or | Cons
