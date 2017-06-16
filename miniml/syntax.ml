@@ -12,6 +12,7 @@ type exp =
   | IfExp of exp * exp * exp
   | LetExp of id * exp * exp
   | FunExp of id * exp
+  | DFunExp of id * exp
   | AppExp of exp * exp
   | LetRecExp of id * id * exp * exp
 

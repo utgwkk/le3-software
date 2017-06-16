@@ -2,6 +2,7 @@
 let reservedWords = [
   (* Keywords *)
   ("and", Parser.AND);
+  ("dfun", Parser.DFUN);
   ("else", Parser.ELSE);
   ("false", Parser.FALSE);
   ("fun", Parser.FUN);

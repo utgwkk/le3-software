@@ -6,7 +6,7 @@ open Syntax
 %token PLUS MINUS MULT LT AND OR
 %token LET REC IN EQ
 %token IF THEN ELSE TRUE FALSE
-%token RARROW FUN
+%token RARROW FUN DFUN
 
 %token <int> INTV
 %token <Syntax.id> ID
@@ -26,10 +26,14 @@ Expr :
   | e=LetExpr { e }
   | e=OrExpr { e }
   | e=FunExpr { e }
+  | e=DFunExpr { e }
   | e=LetRecExpr { e }
 
 FunExpr :
     FUN body=FunBodyExpr { body }
+
+DFunExpr :
+    DFUN x=ID RARROW body=Expr { DFunExp (x, body) }
 
 FunBodyExpr :
     x=ID RARROW body=Expr { FunExp (x, body) }
