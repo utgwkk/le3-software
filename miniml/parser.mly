@@ -109,6 +109,7 @@ AExpr :
 
 ListExpr :
     e=Expr SEMI l=ListExpr { BinOp (Cons, e, l) }
+  | e=Expr SEMI { BinOp (Cons, e, LLit []) }
   | e=Expr { BinOp (Cons, e, LLit []) }
 
 BiOper :
