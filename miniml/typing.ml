@@ -7,6 +7,19 @@ let err s = raise (Error s)
 (* Type environment *)
 type tyenv = ty Environment.t
 
+type subst = (tyvar * ty) list
+
+let rec subst_type subs t =
+  let rec substitute (tyvar, tyrepl) = function
+    TyInt -> TyInt
+  | TyBool -> TyBool
+  | TyVar a -> if a = tyvar then tyrepl else TyVar a
+  | TyFun (a, b) -> TyFun ((substitute (tyvar, tyrepl) a), (substitute (tyvar, tyrepl) b))
+  in
+  match subs with
+    [] -> t
+  | h::ta -> subst_type ta (substitute h t)
+
 let ty_prim op ty1 ty2 = match op with
     Plus -> (match ty1, ty2 with
         TyInt, TyInt -> TyInt
