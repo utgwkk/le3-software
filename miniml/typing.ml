@@ -20,6 +20,21 @@ let rec subst_type subs t =
     [] -> t
   | h::ta -> subst_type ta (substitute h t)
 
+let rec unify =
+  let rec ftv tyvar = function
+		TyFun (a, b) -> (ftv tyvar a) || (ftv tyvar b)
+	| TyVar a -> tyvar = a
+	| _ -> false
+	in function
+			[] -> []
+		| (t1, t2)::tl -> if t1 = t2 then unify tl else
+				match (t1, t2) with
+					(TyFun (t11, t12), TyFun (t21, t22)) -> unify ((t11, t21)::(t12, t22)::tl)
+				| (TyVar tv, t) ->
+						if ftv tv t then err ("type variable " ^ (string_of_int tv) ^ "appears.") else (tv, t) :: (unify tl)
+				| (t, TyVar tv) -> unify ((TyVar tv, t) :: tl)
+				| _ -> err "Type Unification Error"
+
 let ty_prim op ty1 ty2 = match op with
     Plus -> (match ty1, ty2 with
         TyInt, TyInt -> TyInt
