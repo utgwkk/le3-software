@@ -7,14 +7,41 @@ type ty =
   | TyVar of tyvar
   | TyFun of ty * ty
 
-let rec pp_ty = function
-    TyInt -> print_string "int"
-  | TyBool -> print_string "bool"
-  | TyVar _ -> print_string "(unknown)"
-  | TyFun (a, b) ->
-      pp_ty a;
-      print_string " -> ";
-      pp_ty b
+let pp_ty t =
+  let rec collect_tyvar set = function
+    TyVar i -> MySet.singleton i
+  | TyFun (a, b) -> MySet.union (collect_tyvar set b) (collect_tyvar set a)
+  | _ -> MySet.empty
+  in
+  let rec tyvar_map count = function
+      [] -> []
+    | h::t -> (h, "t" ^ (string_of_int count)) :: tyvar_map (count + 1) t
+    in let tyvars = tyvar_map 0 (MySet.to_list @@ collect_tyvar MySet.empty t)
+  in let rec pp_ty' t =
+    match t with
+      TyInt -> print_string "int"
+    | TyBool -> print_string "bool"
+    | TyVar i -> print_string @@ ("'" ^ (List.assoc i tyvars))
+    (* | TyVar i -> print_string @@ ("'a" ^ (string_of_int i)) *)
+    | TyFun (a, b) ->
+        match (a, b) with
+          (TyFun _, TyFun _) ->
+            print_string "(";
+            pp_ty' a;
+            print_string ")";
+            print_string " -> ";
+            pp_ty' b
+        | (TyFun _, _) ->
+            print_string "(";
+            pp_ty' a;
+            print_string ")";
+            print_string " -> ";
+            pp_ty' b
+        | (_, _) ->
+            pp_ty' a;
+            print_string " -> ";
+            pp_ty' b
+  in pp_ty' t
 
 let fresh_tyvar =
   let counter = ref 0 in

@@ -7,14 +7,14 @@ let rec read_eval_print env tyenv =
   flush stdout;
   try (
     let decl = Parser.toplevel Lexer.main (Lexing.from_channel stdin) in
-    let ty = ty_decl tyenv decl in
+    let (newtyenv, ty) = ty_decl tyenv decl in
       let (id, newenv, v) = eval_decl env decl in
         Printf.printf "val %s : " id;
         pp_ty ty;
         print_string " = ";
         pp_val v;
         print_newline();
-        read_eval_print newenv tyenv
+        read_eval_print newenv newtyenv
   ) with
   Error e -> (
     Printf.printf "Runtime Error: %s " e;
