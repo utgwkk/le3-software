@@ -53,7 +53,7 @@ let ty_prim op ty1 ty2 = match op with
   | Lt -> ([(ty1, TyInt); (ty2, TyInt)], TyBool)
   | And -> ([(ty1, TyBool); (ty2, TyBool)], TyBool)
   | Or -> ([(ty1, TyBool); (ty2, TyBool)], TyBool)
-  | _ -> err "Not implemented!"
+  | _ -> err "ty_prim: Not implemented!"
 
 let rec ty_exp tyenv = function
     Var x ->
@@ -85,6 +85,15 @@ let rec ty_exp tyenv = function
       let (s2, ty2) = ty_exp newenv exp2 in
       let eqs = (eqs_of_subst s1) @ (eqs_of_subst s2) in
       let s3 = unify eqs in (s3, subst_type s3 ty2)
+  | LetRecExp (id, para, exp1, exp2) ->
+      let ty_para = TyVar (fresh_tyvar ()) in
+      let ty_fun = TyFun (ty_para, TyVar (fresh_tyvar ())) in
+      let funenv = Environment.extend id ty_fun (Environment.extend para ty_para tyenv) in
+      let (s1, ty1) = ty_exp funenv exp1 in
+      let inenv = Environment.extend id ty_fun tyenv in
+      let (s2, ty2) = ty_exp inenv exp2 in
+      let eqs = (ty_fun, TyFun (ty_para, ty1)) :: (eqs_of_subst s1) @ (eqs_of_subst s2) in
+      let s3 = unify eqs in (s3, subst_type s3 ty2)
   | AppExp (exp1, exp2) ->
       let (s1, ty_fun) = ty_exp tyenv exp1 in
       let (s2, ty_arg) = ty_exp tyenv exp2 in
@@ -94,7 +103,7 @@ let rec ty_exp tyenv = function
   | LazyBinOp (op, exp1, exp2) ->
       (* TODO: nantokasuru *)
       ty_exp tyenv (BinOp (op, exp1, exp2))
-  | _ -> err "Not implemented!"
+  | _ -> err "ty_exp: Not implemented!"
 
 let ty_decl tyenv = function
     Exp e -> let (_, ty) = ty_exp tyenv e in (tyenv, ty)
@@ -102,4 +111,4 @@ let ty_decl tyenv = function
       let (s, t) = ty_exp tyenv e in
       let s2 = unify (eqs_of_subst s) in
       let ty_ret = subst_type s2 t in (Environment.extend id ty_ret tyenv, ty_ret)
-  | _ -> err "Not implemented!"
+  | _ -> err "ty_decl: Not implemented!"
