@@ -6,8 +6,9 @@ type ty =
   | TyBool
   | TyVar of tyvar
   | TyFun of ty * ty
+  | TyList of ty
 
-let pp_ty t =
+let rec pp_ty t =
   let rec collect_tyvar set = function
     TyVar i -> MySet.singleton i
   | TyFun (a, b) -> MySet.union (collect_tyvar set b) (collect_tyvar set a)
@@ -21,8 +22,14 @@ let pp_ty t =
     match t with
       TyInt -> print_string "int"
     | TyBool -> print_string "bool"
-    | TyVar i -> print_string @@ ("'" ^ (List.assoc i tyvars))
+    | TyVar i -> (
+        try print_string @@ ("'" ^ (List.assoc i tyvars))
+        with Not_found -> pp_ty t
+    )
     (* | TyVar i -> print_string @@ ("'a" ^ (string_of_int i)) *)
+    | TyList a ->
+        pp_ty' a;
+        print_string " list"
     | TyFun (a, b) ->
         match (a, b) with
           (TyFun _, TyFun _) ->
@@ -53,6 +60,7 @@ let fresh_tyvar =
 let rec freevar_ty ty = match ty with
     TyInt -> MySet.empty
   | TyBool -> MySet.empty
+  | TyList a -> freevar_ty a
   | TyVar a -> MySet.singleton a
   | TyFun (a, b) -> MySet.union (freevar_ty a) (freevar_ty b)
 

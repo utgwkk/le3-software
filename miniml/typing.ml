@@ -13,6 +13,7 @@ let rec subst_type subs t =
   let rec substitute (tyvar, tyrepl) = function
     TyInt -> TyInt
   | TyBool -> TyBool
+  | TyList a -> TyList (substitute (tyvar, tyrepl) a)
   | TyVar a -> if a = tyvar then tyrepl else TyVar a
   | TyFun (a, b) -> TyFun ((substitute (tyvar, tyrepl) a), (substitute (tyvar, tyrepl) b))
   in
@@ -28,6 +29,7 @@ let rec unify =
   let rec ftv tyvar = function
     TyFun (a, b) -> (ftv tyvar a) || (ftv tyvar b)
   | TyVar a -> tyvar = a
+  | TyList a -> ftv tyvar a
   | _ -> false
   in function
       [] -> [] | (t1, t2)::tl ->
@@ -38,6 +40,7 @@ let rec unify =
         if t1 = t2 then unify tl else (
         match (t1, t2) with
           (TyFun (t11, t12), TyFun (t21, t22)) -> unify ((t11, t21)::(t12, t22)::tl)
+        | (TyList t1, TyList t2) -> unify ((t1, t2)::tl)
         | (TyVar t1, TyVar t2) -> (t2, TyVar t1) :: (unify @@ subst_eqs [(t2, TyVar t1)] tl)
         | (TyVar tv, t) ->
             if ftv tv t then err ("type variable " ^ (string_of_int tv) ^ " appears.")
@@ -53,6 +56,8 @@ let ty_prim op ty1 ty2 = match op with
   | Lt -> ([(ty1, TyInt); (ty2, TyInt)], TyBool)
   | And -> ([(ty1, TyBool); (ty2, TyBool)], TyBool)
   | Or -> ([(ty1, TyBool); (ty2, TyBool)], TyBool)
+  | Cons ->
+      let a = TyVar (fresh_tyvar ()) in ([(ty1, a); (ty2, TyList a)], TyList a)
   | _ -> err "ty_prim: Not implemented!"
 
 let rec ty_exp tyenv = function
@@ -61,6 +66,11 @@ let rec ty_exp tyenv = function
         Environment.Not_bound -> err ("Variable not bound: " ^ x))
   | ILit _ -> ([], TyInt)
   | BLit _ -> ([], TyBool)
+  | LLit l -> (
+      match l with
+      [] -> ([], TyList (TyVar (fresh_tyvar ())))
+    | h::t -> ty_exp tyenv h
+  )
   | BinOp (op, exp1, exp2) ->
       let (s1, ty1) = ty_exp tyenv exp1 in
       let (s2, ty2) = ty_exp tyenv exp2 in
@@ -100,6 +110,13 @@ let rec ty_exp tyenv = function
       let ty_ret = TyVar (fresh_tyvar ()) in
       let eqs = (ty_fun, TyFun (ty_arg, ty_ret)) :: (eqs_of_subst s1) @ (eqs_of_subst s2) in 
       let s3 = unify eqs in (s3, subst_type s3 ty_ret)
+  | MatchExp (exp_target, head, tail, exp_empty, exp_else) ->
+      let (s1, ty_target) = ty_exp tyenv exp_target in
+      let (s2, ty_empty) = ty_exp tyenv exp_empty in
+      let tyv = TyVar (fresh_tyvar ()) in
+      let (s3, ty_else) = ty_exp (Environment.extend head tyv (Environment.extend tail (TyList tyv) tyenv)) exp_else in
+      let eqs = (ty_target, TyList tyv) :: (ty_empty, ty_else) :: (eqs_of_subst s1) @ (eqs_of_subst s2) @ (eqs_of_subst s3) in
+      let s4 = unify eqs in (s4, subst_type s4 ty_else)
   | LazyBinOp (op, exp1, exp2) ->
       (* TODO: nantokasuru *)
       ty_exp tyenv (BinOp (op, exp1, exp2))
