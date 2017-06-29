@@ -128,4 +128,12 @@ let ty_decl tyenv = function
       let (s, t) = ty_exp tyenv e in
       let s2 = unify (eqs_of_subst s) in
       let ty_ret = subst_type s2 t in (Environment.extend id ty_ret tyenv, ty_ret)
+  | RecDecl (id, para, body) ->
+      let ty_para = TyVar (fresh_tyvar ()) in
+      let ty_fun = TyFun (ty_para, TyVar (fresh_tyvar ())) in
+      let funenv = Environment.extend id ty_fun (Environment.extend para ty_para tyenv) in
+      let (s, t) = ty_exp funenv body in
+      let eqs = (eqs_of_subst s) in
+      let s2 = unify eqs in
+      let ty_ret = subst_type s2 t in (Environment.extend id ty_ret tyenv, ty_ret)
   | _ -> err "ty_decl: Not implemented!"
