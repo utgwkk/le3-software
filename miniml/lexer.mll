@@ -16,16 +16,13 @@ let reservedWords = [
   ("true", Parser.TRUE);
   ("with", Parser.WITH)
 ] 
-
-let comment_nested = ref 0
 }
 
 rule main = parse
   (* ignore spacing and newline characters *)
   [' ' '\009' '\012' '\n']+     { main lexbuf }
   (* start comment *)
-| "(*" { comment_nested := 1;
-           comment lexbuf }
+| "(*" { comment 1 lexbuf }
 
 | "-"? ['0'-'9']+
     { Parser.INTV (int_of_string (Lexing.lexeme lexbuf)) }
@@ -57,17 +54,14 @@ rule main = parse
 | eof { exit 0 }
 
 
-and comment = parse
-  "*)" { if !comment_nested = 1 then (
-    comment_nested := 0;
+and comment nest = parse
+  "*)" { if nest = 1 then (
     main lexbuf
-  ) else if !comment_nested > 1 then (
-    comment_nested := !comment_nested - 1;
-    comment lexbuf
+  ) else if nest > 1 then (
+    comment (nest - 1) lexbuf
   ) else (
     raise Parsing.Parse_error
   )}
-| "(*" { comment_nested := !comment_nested + 1;
-         comment lexbuf }
+| "(*" { comment (nest + 1) lexbuf }
 | eof { raise Parsing.Parse_error }
-| _ { comment lexbuf }
+| _ { comment nest lexbuf }
