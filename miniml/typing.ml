@@ -89,6 +89,9 @@ let rec ty_exp tyenv = function
       let newenv = Environment.extend id ty_arg tyenv in
       let (s, ty_body) = ty_exp newenv body in
       (s, TyFun (subst_type s ty_arg, ty_body))
+  | DFunExp (id, body) ->
+      (* TODO: nantokasuru *)
+      ty_exp tyenv (FunExp (id, body))
   | LetExp (id, exp1, exp2) ->
       let (s1, ty1) = ty_exp tyenv exp1 in
       let newenv = Environment.extend id ty1 tyenv in
