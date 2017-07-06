@@ -30,6 +30,22 @@ Expr :
   | e=LetRecExpr { e }
   | e=MatchWithExpr { e }
 
+ExpandExpr :
+    e=LetExpr { e }
+  | e=FunExpr { e }
+  | e=DFunExpr { e }
+  | e=LetRecExpr { e }
+  | e=MatchWith2Expr { e }
+
+MatchWith2Expr :
+    MATCH target=Expr WITH
+    LLPAREN RLPAREN RARROW e1=Expr
+    PIPE head=ID CONS tail=ID RARROW e2=Expr { MatchExp (target, head, tail, e1, e2) }
+  | e=If2Expr { e }
+
+If2Expr :
+    IF c=Expr THEN t=Expr ELSE e=Expr { IfExp (c, t, e) }
+
 MatchWithExpr :
     MATCH target=Expr WITH
     LLPAREN RLPAREN RARROW e1=Expr
@@ -106,6 +122,7 @@ AExpr :
   | i=ID   { Var i }
   | LPAREN e=BiOper RPAREN { e }
   | LPAREN e=Expr RPAREN { e }
+  | e=ExpandExpr { e }
 
 ListExpr :
     e=Expr SEMI l=ListExpr { BinOp (Cons, e, l) }
