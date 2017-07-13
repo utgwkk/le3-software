@@ -41,7 +41,6 @@ let rec unify =
         match (t1, t2) with
           (TyFun (t11, t12), TyFun (t21, t22)) -> unify ((t11, t21)::(t12, t22)::tl)
         | (TyList t1, TyList t2) -> unify ((t1, t2)::tl)
-        | (TyVar t1, TyVar t2) -> (t2, TyVar t1) :: (unify @@ subst_eqs [(t2, TyVar t1)] tl)
         | (TyVar tv, t) ->
             if ftv tv t then err ("type variable " ^ (string_of_int tv) ^ " appears.")
             else (tv, t) :: (unify @@ subst_eqs [(tv, t)] tl)
