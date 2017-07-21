@@ -32,19 +32,13 @@ let rec pp_ty t =
         print_string " list"
     | TyFun (a, b) ->
         match (a, b) with
-          (TyFun _, TyFun _) ->
+          (TyFun _, _) ->
             print_string "(";
             pp_ty' a;
             print_string ")";
             print_string " -> ";
             pp_ty' b
-        | (TyFun _, _) ->
-            print_string "(";
-            pp_ty' a;
-            print_string ")";
-            print_string " -> ";
-            pp_ty' b
-        | (_, _) ->
+        | _ ->
             pp_ty' a;
             print_string " -> ";
             pp_ty' b
