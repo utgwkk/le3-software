@@ -17,8 +17,8 @@ let rec string_of_exval = function
     IntV i -> string_of_int i
   | BoolV b -> string_of_bool b
   | ListV l -> "[" ^ (String.concat "; " (List.map string_of_exval l)) ^ "]"
-  | ProcV (name, _, _) -> "<function " ^ name ^ ">"
-  | DProcV (name, _) -> "<dynamic function " ^ name ^ ">"
+  | ProcV _ -> "<fun>"
+  | DProcV (_) -> "<dfun>"
 
 let pp_val v = print_string (string_of_exval v)
 
