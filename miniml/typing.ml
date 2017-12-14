@@ -16,6 +16,7 @@ let rec subst_type subs t =
   | TyList a -> TyList (substitute (tyvar, tyrepl) a)
   | TyVar a -> if a = tyvar then tyrepl else TyVar a
   | TyFun (a, b) -> TyFun ((substitute (tyvar, tyrepl) a), (substitute (tyvar, tyrepl) b))
+  | TyTuple (a, b) -> TyTuple ((substitute (tyvar, tyrepl) a), (substitute (tyvar, tyrepl) b))
   in
   match subs with
     [] -> t
@@ -28,6 +29,7 @@ let subst_eqs s eqs = List.map (fun (t1, t2) -> (subst_type s t1, subst_type s t
 let rec unify =
   let rec ftv tyvar = function
     TyFun (a, b) -> (ftv tyvar a) || (ftv tyvar b)
+  | TyTuple (a, b) -> (ftv tyvar a) || (ftv tyvar b)
   | TyVar a -> tyvar = a
   | TyList a -> ftv tyvar a
   | _ -> false
@@ -40,6 +42,7 @@ let rec unify =
         if t1 = t2 then unify tl else (
         match (t1, t2) with
           (TyFun (t11, t12), TyFun (t21, t22)) -> unify ((t11, t21)::(t12, t22)::tl)
+        | (TyTuple (t11, t12), TyTuple (t21, t22)) -> unify ((t11, t21)::(t12, t22)::tl)
         | (TyList t1, TyList t2) -> unify ((t1, t2)::tl)
         | (TyVar tv, t) ->
             if ftv tv t then err ("type variable " ^ (string_of_int tv) ^ " appears.")
@@ -119,6 +122,28 @@ let rec ty_exp tyenv = function
       let (s3, ty_else) = ty_exp (Environment.extend head tyv (Environment.extend tail (TyList tyv) tyenv)) exp_else in
       let eqs = (ty_target, TyList tyv) :: (ty_empty, ty_else) :: (eqs_of_subst s1) @ (eqs_of_subst s2) @ (eqs_of_subst s3) in
       let s4 = unify eqs in (s4, subst_type s4 ty_else)
+  | LoopExp (id, exp1, exp2) ->
+      let loop_letrec = LetRecExp ("__loop__", id, exp2, AppExp (Var "__loop__", exp1)) in
+      ty_exp tyenv loop_letrec
+  | RecurExp e ->
+      let loop_recur = AppExp (Var "__loop__", e) in
+      ty_exp tyenv loop_recur
+  | TupleExp (exp1, exp2) ->
+      let (s1, ty1) = ty_exp tyenv exp1 in
+      let (s2, ty2) = ty_exp tyenv exp2 in
+      let eqs = (eqs_of_subst s1) @ (eqs_of_subst s2) in
+      let s3 = unify eqs in (s3, subst_type s3 (TyTuple (ty1, ty2)))
+  | ProjExp (exp, idx) ->
+      let (s1, ty_tup) = ty_exp tyenv exp in
+      let tyv_left = TyVar (fresh_tyvar ()) in
+      let tyv_right = TyVar (fresh_tyvar ()) in
+      let eqs = [(ty_tup, TyTuple (tyv_left, tyv_right))] @ (eqs_of_subst s1) in
+      let s2 = unify eqs in (
+        match idx with
+          1 -> (s2, subst_type s2 tyv_left)
+        | 2 -> (s2, subst_type s2 tyv_right)
+        | _ -> err "ty_exp: projection index out of range"
+      )
   | LazyBinOp (op, exp1, exp2) ->
       (* TODO: nantokasuru *)
       ty_exp tyenv (BinOp (op, exp1, exp2))
