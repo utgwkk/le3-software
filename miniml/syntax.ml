@@ -76,6 +76,10 @@ type exp =
   | AppExp of exp * exp
   | LetRecExp of id * id * exp * exp
   | MatchExp of exp * id * id * exp * exp
+  | LoopExp of id * exp * exp
+  | RecurExp of exp
+  | TupleExp of exp * exp
+  | ProjExp of exp * int
 
 type program = 
     Exp of exp

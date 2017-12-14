@@ -9,6 +9,8 @@ open Syntax
 %token RARROW FUN DFUN
 %token CONS LLPAREN RLPAREN SEMI
 %token MATCH WITH PIPE
+%token LOOP RECUR
+%token DOT COMMA
 
 %token <int> INTV
 %token <Syntax.id> ID
@@ -29,6 +31,7 @@ Expr :
   | e=DFunExpr { e }
   | e=LetRecExpr { e }
   | e=MatchWithExpr { e }
+  | e=LoopExpr { e }
 
 ExpandExpr :
     e=LetExpr { e }
@@ -55,6 +58,9 @@ MatchWithExpr :
 IfExpr :
     IF c=Expr THEN t=Expr ELSE e=Expr { IfExp (c, t, e) }
   | e=OrExpr { e }
+
+LoopExpr :
+    LOOP x=ID EQ e1=Expr IN e2=Expr { LoopExp (x, e1, e2) }
 
 FunExpr :
     FUN body=FunBodyExpr { body }
@@ -111,6 +117,7 @@ MExpr :
 
 AppExpr :
     e1=AppExpr e2=AExpr { AppExp (e1, e2) }
+  | RECUR e=AExpr { RecurExp e }
   | e=AExpr { e }
 
 AExpr :
@@ -122,6 +129,8 @@ AExpr :
   | i=ID   { Var i }
   | LPAREN e=BiOper RPAREN { e }
   | LPAREN e=Expr RPAREN { e }
+  | LPAREN e1=Expr COMMA e2=Expr RPAREN { TupleExp (e1, e2) }
+  | e=AExpr DOT i=INTV { ProjExp (e, i) }
   | e=ExpandExpr { e }
 
 ListExpr :
