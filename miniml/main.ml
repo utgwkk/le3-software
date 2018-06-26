@@ -50,12 +50,12 @@ let initial_tyenv =
       [] -> env
     | (name, t) :: rest -> extend (Environment.extend name t env) rest
   in extend Environment.empty [
-      ("i", TyInt);
-      ("v", TyInt);
-      ("x", TyInt);
-      ("ii", TyInt);
-      ("iii", TyInt);
-      ("iv", TyInt);
+      ("i", tysc_of_ty TyInt);
+      ("v", tysc_of_ty TyInt);
+      ("x", tysc_of_ty TyInt);
+      ("ii", tysc_of_ty TyInt);
+      ("iii", tysc_of_ty TyInt);
+      ("iv", tysc_of_ty TyInt);
       ]
 
 let _ = read_eval_print initial_env initial_tyenv

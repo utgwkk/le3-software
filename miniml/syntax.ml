@@ -81,3 +81,10 @@ type program =
     Exp of exp
   | Decl of id * exp
   | RecDecl of id * id * exp
+
+type tysc = TyScheme of tyvar list * ty
+
+let tysc_of_ty ty = TyScheme ([], ty)
+
+let freevar_tysc tysc = match tysc with
+  | TyScheme (tyvars, ty) -> MySet.diff (freevar_ty ty) (MySet.from_list tyvars)
