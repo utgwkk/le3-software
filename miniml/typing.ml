@@ -121,7 +121,8 @@ let rec ty_exp tyenv = function
       let ty_fun = TyFun (ty_para, TyVar (fresh_tyvar ())) in
       let funenv = Environment.extend id (tysc_of_ty ty_fun) (Environment.extend para (tysc_of_ty ty_para) tyenv) in
       let (s1, ty1) = ty_exp funenv exp1 in
-      let inenv = Environment.extend id (tysc_of_ty ty_fun) tyenv in
+      let tysc = closure (subst_type s1 (TyFun (ty_para, ty1))) tyenv s1 in
+      let inenv = Environment.extend id tysc tyenv in
       let (s2, ty2) = ty_exp inenv exp2 in
       let eqs = (ty_fun, TyFun (ty_para, ty1)) :: (eqs_of_subst s1) @ (eqs_of_subst s2) in
       let s3 = unify eqs in (s3, subst_type s3 ty2)
@@ -156,7 +157,9 @@ let ty_decl tyenv = function
       let ty_fun = TyFun (ty_para, TyVar (fresh_tyvar ())) in
       let funenv = Environment.extend id (tysc_of_ty ty_fun) (Environment.extend para (tysc_of_ty ty_para) tyenv) in
       let (s, t) = ty_exp funenv body in
-      let eqs = (eqs_of_subst s) in
+      let eqs = (ty_fun, t) :: (eqs_of_subst s) in
       let s2 = unify eqs in
-      let ty_ret = subst_type s2 t in (Environment.extend id (tysc_of_ty ty_ret) tyenv, ty_ret)
+      let ty_ret = subst_type s2 t in
+      let tysc = closure ty_ret tyenv s2 in
+      (Environment.extend id tysc tyenv, ty_ret)
   | _ -> err "ty_decl: Not implemented!"
