@@ -137,3 +137,4 @@ BiOper :
   | EQ { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Eq, Var ("__lhs__"), Var ("__rhs__")))) }
   | AND { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (And, Var ("__lhs__"), Var ("__rhs__")))) }
   | OR { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Or, Var ("__lhs__"), Var ("__rhs__")))) }
+  | CONS { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Cons, Var ("__lhs__"), Var ("__rhs__")))) }
