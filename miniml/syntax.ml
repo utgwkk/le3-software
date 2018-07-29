@@ -26,7 +26,6 @@ let rec pp_ty t =
         try print_string @@ ("'" ^ (List.assoc i tyvars))
         with Not_found -> pp_ty t
     )
-    (* | TyVar i -> print_string @@ ("'a" ^ (string_of_int i)) *)
     | TyList a ->
         pp_ty' a;
         print_string " list"
@@ -86,5 +85,4 @@ type tysc = TyScheme of tyvar list * ty
 
 let tysc_of_ty ty = TyScheme ([], ty)
 
-let freevar_tysc tysc = match tysc with
-  | TyScheme (tyvars, ty) -> MySet.diff (freevar_ty ty) (MySet.from_list tyvars)
+let freevar_tysc (TyScheme (tyvars, ty)) = MySet.diff (freevar_ty ty) (MySet.from_list tyvars)

@@ -48,10 +48,6 @@ let rec unify =
   | _ -> false
   in function
       [] -> [] | (t1, t2)::tl ->
-        (* pp_ty t1; *)
-        (* print_string ", "; *)
-        (* pp_ty t2; *)
-        (* print_newline(); *)
         if t1 = t2 then unify tl else (
         match (t1, t2) with
           (TyFun (t11, t12), TyFun (t21, t22)) -> unify ((t11, t21)::(t12, t22)::tl)
@@ -140,7 +136,6 @@ let rec ty_exp tyenv = function
       let eqs = (ty_target, TyList tyv) :: (ty_empty, ty_else) :: (eqs_of_subst s1) @ (eqs_of_subst s2) @ (eqs_of_subst s3) in
       let s4 = unify eqs in (s4, subst_type s4 ty_else)
   | LazyBinOp (op, exp1, exp2) ->
-      (* TODO: nantokasuru *)
       ty_exp tyenv (BinOp (op, exp1, exp2))
   | _ -> err "ty_exp: Not implemented!"
 

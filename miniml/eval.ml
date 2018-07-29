@@ -106,8 +106,8 @@ and eval_exp env = function
         let target_value = eval_exp env target
         in match target_value with
             ListV [] -> eval_exp env exp1
-          | ListV (x :: xs) ->let newenv =
-              ref (Environment.extend head x (Environment.extend tail (ListV xs) !env))
+          | ListV (x :: xs) ->
+              let newenv = ref (Environment.extend head x (Environment.extend tail (ListV xs) !env))
             in eval_exp newenv exp2
           | _ -> err ("Pattern match target must be list")
   )
