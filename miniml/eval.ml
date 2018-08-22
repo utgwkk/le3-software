@@ -6,6 +6,7 @@ type exval =
   | ListV of exval list
   | DProcV of id * exp
   | ProcV of id * exp * dnval Environment.t ref
+  | TupleV of exval * exval
 and dnval = exval
 
 exception Error of string
@@ -19,6 +20,7 @@ let rec string_of_exval = function
   | ListV l -> "[" ^ (String.concat "; " (List.map string_of_exval l)) ^ "]"
   | ProcV _ -> "<fun>"
   | DProcV (_) -> "<dfun>"
+  | TupleV (left, right) -> "(" ^ (string_of_exval left) ^ ", " ^ (string_of_exval right) ^ ")"
 
 let pp_val v = print_string (string_of_exval v)
 
@@ -111,12 +113,49 @@ and eval_exp env = function
             in eval_exp newenv exp2
           | _ -> err ("Pattern match target must be list")
   )
+  | LoopExp (id, e1, e2) -> (
+      let loop_letrec = LetRecExp ("__loop__", id, e2, AppExp (Var "__loop__", e1)) in
+      eval_exp env loop_letrec
+  )
+  | RecurExp e -> let loop_recur = AppExp (Var "__loop__", e) in eval_exp env loop_recur
+  | TupleExp (e1, e2) -> TupleV (eval_exp env e1, eval_exp env e2)
+  | ProjExp (e, idx) ->
+      let tv = eval_exp env e in
+      match tv with
+          TupleV (left, right) -> (
+            match idx with
+          1 -> left
+        | 2 -> right
+        | _ -> err ("Index of tuple projection must be 1 or 2")
+      )
+      | _ -> err ("Projection target must be tuple")
+
+(* ==== recur式が末尾位置にのみ書かれていることを検査 ==== *)
+
+let recur_check e =
+  let rec check e ok = match e with
+    BinOp (_, e1, e2) -> check e1 false; check e2 false;
+  | IfExp (e1, e2, e3) -> check e1 false; check e2 true; check e3 true;
+  | LetExp (_, e1, e2) -> check e1 false; check e2 ok;
+  | FunExp (_, e) -> check e false;
+  | AppExp (e1, e2) -> check e1 ok; check e2 ok;
+  | LetRecExp (_, _, e1, e2) -> check e1 false; check e2 ok;
+  | LoopExp (_, e1, e2) -> check e1 false; check e2 true;
+  | RecurExp _ -> if ok then () else err "recur check failed"
+  | TupleExp (e1, e2) -> check e1 false; check e2 false;
+  | ProjExp (e, _) -> check e false;
+  | _ -> ()
+  in check e false
 
 let eval_decl env = function
-    Exp e -> let v = eval_exp (ref env) e in ("-", env, v)
+    Exp e ->
+      recur_check e;
+      let v = eval_exp (ref env) e in ("-", env, v)
   | Decl (id, e) ->
+      recur_check e;
       let v = eval_exp (ref env) e in (id, Environment.extend id v env, v)
   | RecDecl (id, _, e) ->
+      recur_check e;
       let dummyenv = ref Environment.empty in
       let newenv =
         Environment.extend id (eval_exp dummyenv e) env in

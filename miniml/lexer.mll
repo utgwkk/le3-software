@@ -9,9 +9,11 @@ let reservedWords = [
   ("if", Parser.IF);
   ("in", Parser.IN);
   ("let", Parser.LET);
+  ("loop", Parser.LOOP);
   ("match", Parser.MATCH);
   ("or", Parser.OR);
   ("rec", Parser.REC);
+  ("recur", Parser.RECUR);
   ("then", Parser.THEN);
   ("true", Parser.TRUE);
   ("with", Parser.WITH)
@@ -32,6 +34,8 @@ rule main = parse
 | "[" { Parser.LLPAREN }
 | "]" { Parser.RLPAREN }
 | ";" { Parser.SEMI }
+| "," { Parser.COMMA }
+| "." { Parser.DOT }
 | "::" { Parser.CONS }
 | ";;" { Parser.SEMISEMI }
 | "|" { Parser.PIPE }
