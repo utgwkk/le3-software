@@ -26,11 +26,7 @@ toplevel :
   | LET REC x=ID EQ FUN para=ID RARROW body=Expr SEMISEMI { RecDecl (x, para, FunExp(para, body)) }
 
 Expr :
-    e=LetExpr { e }
-  | e=FunExpr { e }
-  | e=DFunExpr { e }
-  | e=LetRecExpr { e }
-  | e=MatchWithExpr { e }
+    e=OrExpr { e }
   | e=LoopExpr { e }
 
 ExpandExpr :
@@ -38,16 +34,7 @@ ExpandExpr :
   | e=FunExpr { e }
   | e=DFunExpr { e }
   | e=LetRecExpr { e }
-  | e=MatchWith2Expr { e }
-
-MatchWith2Expr :
-    MATCH target=Expr WITH
-    LLPAREN RLPAREN RARROW e1=Expr
-    PIPE head=ID CONS tail=ID RARROW e2=Expr { MatchExp (target, head, tail, e1, e2) }
-  | e=If2Expr { e }
-
-If2Expr :
-    IF c=Expr THEN t=Expr ELSE e=Expr { IfExp (c, t, e) }
+  | e=MatchWithExpr { e }
 
 MatchWithExpr :
     MATCH target=Expr WITH
@@ -57,7 +44,6 @@ MatchWithExpr :
 
 IfExpr :
     IF c=Expr THEN t=Expr ELSE e=Expr { IfExp (c, t, e) }
-  | e=OrExpr { e }
 
 LoopExpr :
     LOOP x=ID EQ e1=Expr IN e2=Expr { LoopExp (x, e1, e2) }
@@ -88,19 +74,12 @@ OrExpr :
   | e=AndExpr { e }
 
 AndExpr :
-    l=AndExpr AND r=CmpExpr { LazyBinOp (And, l, r) }
-  | e=CmpExpr { e }
-
-CmpExpr :
-    e=LTExpr { e }
-  | e=EQExpr { e }
-  | e=ConsExpr { e }
+    l=AndExpr AND r=LTExpr { LazyBinOp (And, l, r) }
+  | e=LTExpr { e }
 
 LTExpr : 
     l=ConsExpr LT r=ConsExpr { BinOp (Lt, l, r) }
-
-EQExpr :
-    l=ConsExpr EQ r=ConsExpr { BinOp (Eq, l, r) }
+  | e=ConsExpr { e }
 
 ConsExpr :
     l=PExpr CONS r=ConsExpr { BinOp (Cons, l, r) }
