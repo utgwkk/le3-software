@@ -71,7 +71,6 @@ let ty_prim op ty1 ty2 = match op with
   | Or -> ([(ty1, TyBool); (ty2, TyBool)], TyBool)
   | Cons ->
       let a = TyVar (fresh_tyvar ()) in ([(ty1, a); (ty2, TyList a)], TyList a)
-  | _ -> err "ty_prim: Not implemented!"
 
 let rec ty_exp tyenv = function
     Var x -> (
@@ -162,7 +161,6 @@ let rec ty_exp tyenv = function
       )
   | LazyBinOp (op, exp1, exp2) ->
       ty_exp tyenv (BinOp (op, exp1, exp2))
-  | _ -> err "ty_exp: Not implemented!"
 
 let ty_decl tyenv = function
     Exp e -> let (_, ty) = ty_exp tyenv e in (tyenv, ty)
@@ -182,4 +180,3 @@ let ty_decl tyenv = function
       let ty_ret = subst_type s2 t in
       let tysc = closure ty_ret tyenv s2 in
       (Environment.extend id tysc tyenv, ty_ret)
-  | _ -> err "ty_decl: Not implemented!"

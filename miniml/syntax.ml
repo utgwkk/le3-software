@@ -87,7 +87,7 @@ let rec freevar_ty ty = match ty with
 
 type id = string
 
-type binOp = Plus | Minus | Mult | Lt | Eq | And | Or | Cons
+type binOp = Plus | Minus | Mult | Lt | And | Or | Cons
 
 type exp =
     Var of id
