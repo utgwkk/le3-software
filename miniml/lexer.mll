@@ -40,7 +40,6 @@ rule main = parse
 | ";;" { Parser.SEMISEMI }
 | "|" { Parser.PIPE }
 | "+" { Parser.PLUS }
-| "-" { Parser.MINUS }
 | "*" { Parser.MULT }
 | "<" { Parser.LT }
 | "=" { Parser.EQ }

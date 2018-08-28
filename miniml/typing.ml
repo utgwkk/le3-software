@@ -64,7 +64,6 @@ let rec unify =
 
 let ty_prim op ty1 ty2 = match op with
     Plus -> ([(ty1, TyInt); (ty2, TyInt)], TyInt)
-  | Minus -> ([(ty1, TyInt); (ty2, TyInt)], TyInt)
   | Mult -> ([(ty1, TyInt); (ty2, TyInt)], TyInt)
   | Lt -> ([(ty1, TyInt); (ty2, TyInt)], TyBool)
   | And -> ([(ty1, TyBool); (ty2, TyBool)], TyBool)

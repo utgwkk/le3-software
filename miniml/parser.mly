@@ -3,7 +3,7 @@ open Syntax
 %}
 
 %token LPAREN RPAREN SEMISEMI
-%token PLUS MINUS MULT LT AND OR
+%token PLUS MULT LT AND OR
 %token LET REC IN EQ
 %token IF THEN ELSE TRUE FALSE
 %token RARROW FUN DFUN
@@ -87,7 +87,6 @@ ConsExpr :
 
 PExpr :
     l=PExpr PLUS r=MExpr { BinOp (Plus, l, r) }
-  | l=PExpr MINUS r=MExpr { BinOp (Minus, l, r) }
   | e=MExpr { e }
 
 MExpr : 
@@ -119,7 +118,6 @@ ListExpr :
 
 BiOper :
     PLUS { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Plus, Var ("__lhs__"), Var ("__rhs__")))) }
-  | MINUS { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Minus, Var ("__lhs__"), Var ("__rhs__")))) }
   | MULT { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Mult, Var ("__lhs__"), Var ("__rhs__")))) }
   | LT { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (Lt, Var ("__lhs__"), Var ("__rhs__")))) }
   | AND { FunExp ("__lhs__", FunExp ("__rhs__", BinOp (And, Var ("__lhs__"), Var ("__rhs__")))) }

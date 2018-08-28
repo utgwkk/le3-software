@@ -27,8 +27,6 @@ let pp_val v = print_string (string_of_exval v)
 let rec apply_prim op arg1 arg2 = match op, arg1, arg2 with
     Plus, IntV i1, IntV i2 -> IntV (i1 + i2)
   | Plus, _, _ -> err ("Both arguments must be integer: +")
-  | Minus, IntV i1, IntV i2 -> IntV (i1 - i2)
-  | Minus, _, _ -> err ("Both arguments must be integer: -")
   | Mult, IntV i1, IntV i2 -> IntV (i1 * i2)
   | Mult, _, _ -> err ("Both arguments must be integer: *")
   | Cons, ListV l1, ListV l2 -> ListV ((ListV l1) :: l2)
