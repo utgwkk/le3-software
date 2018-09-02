@@ -17,10 +17,10 @@ let err s = raise (Error s)
 let rec string_of_exval = function
     IntV i -> string_of_int i
   | BoolV b -> string_of_bool b
-  | ListV l -> "[" ^ (String.concat "; " (List.map string_of_exval l)) ^ "]"
+  | ListV l -> "[" ^ String.concat "; " (List.map string_of_exval l) ^ "]"
   | ProcV _ -> "<fun>"
   | DProcV (_) -> "<dfun>"
-  | TupleV (left, right) -> "(" ^ (string_of_exval left) ^ ", " ^ (string_of_exval right) ^ ")"
+  | TupleV (left, right) -> "(" ^ string_of_exval left ^ ", " ^ string_of_exval right ^ ")"
 
 let pp_val v = print_string (string_of_exval v)
 
@@ -55,9 +55,10 @@ let rec apply_prim_lazy op env exp1 exp2 =
     | _, _ -> eval_exp env exp2
 
 and eval_exp env = function
-    Var x -> 
-      (try Environment.lookup x !env with 
-        Environment.Not_bound -> err ("Variable not bound: " ^ x))
+    Var x -> (
+      try Environment.lookup x !env
+      with Environment.Not_bound -> err ("Variable not bound: " ^ x)
+    )
   | ILit i -> IntV i
   | BLit b -> BoolV b
   | LLit l -> ListV (List.map (eval_exp env) l)

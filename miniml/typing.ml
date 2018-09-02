@@ -20,8 +20,8 @@ let rec subst_type subs t =
   | TyBool -> TyBool
   | TyList a -> TyList (substitute (tyvar, tyrepl) a)
   | TyVar a -> if a = tyvar then tyrepl else TyVar a
-  | TyFun (a, b) -> TyFun ((substitute (tyvar, tyrepl) a), (substitute (tyvar, tyrepl) b))
-  | TyTuple (a, b) -> TyTuple ((substitute (tyvar, tyrepl) a), (substitute (tyvar, tyrepl) b))
+  | TyFun (a, b) -> TyFun (substitute (tyvar, tyrepl) a, substitute (tyvar, tyrepl) b)
+  | TyTuple (a, b) -> TyTuple (substitute (tyvar, tyrepl) a, substitute (tyvar, tyrepl) b)
   in
   match subs with
     [] -> t
@@ -43,8 +43,8 @@ let closure ty tyenv subst =
 
 let rec unify =
   let rec ftv tyvar = function
-    TyFun (a, b) -> (ftv tyvar a) || (ftv tyvar b)
-  | TyTuple (a, b) -> (ftv tyvar a) || (ftv tyvar b)
+    TyFun (a, b) -> ftv tyvar a || ftv tyvar b
+  | TyTuple (a, b) -> ftv tyvar a || ftv tyvar b
   | TyVar a -> tyvar = a
   | TyList a -> ftv tyvar a
   | _ -> false
@@ -69,7 +69,8 @@ let ty_prim op ty1 ty2 = match op with
   | And -> ([(ty1, TyBool); (ty2, TyBool)], TyBool)
   | Or -> ([(ty1, TyBool); (ty2, TyBool)], TyBool)
   | Cons ->
-      let a = TyVar (fresh_tyvar ()) in ([(ty1, a); (ty2, TyList a)], TyList a)
+      let a = TyVar (fresh_tyvar ()) in
+      ([(ty1, a); (ty2, TyList a)], TyList a)
 
 let rec ty_exp tyenv = function
     Var x -> (
