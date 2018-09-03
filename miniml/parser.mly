@@ -59,8 +59,9 @@ FunBodyExpr :
   | x=ID e=FunBodyExpr { FunExp (x, e)}
 
 LetExpr :
-    LET x=ID EQ e1=Expr IN e2=Expr { LetExp (x, e1, e2) }
-  | LET id=ID e1=LetFunExpr IN e2=Expr { LetExp (id, e1, e2) }
+    LET x=ID EQ e1=Expr IN e2=Expr { LetExp (LVar x, e1, e2) }
+  | LET LPAREN x=ID COMMA y=ID RPAREN EQ e1=Expr IN e2=Expr { LetExp (LTuple (x, y), e1, e2) }
+  | LET id=ID e1=LetFunExpr IN e2=Expr { LetExp (LVar id, e1, e2) }
 
 LetFunExpr :
     id=ID EQ body=Expr { FunExp (id, body) }

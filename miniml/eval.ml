@@ -80,9 +80,19 @@ and eval_exp env = function
       | BoolV true -> eval_exp env exp2
       | BoolV false -> eval_exp env exp3
       | _ -> err "Test expression must be boolean: if" )
-  | LetExp (id, exp1, exp2) ->
-      let value = eval_exp env exp1 in
-      eval_exp (ref (Environment.extend id value !env)) exp2
+  | LetExp (lhs, exp1, exp2) -> (
+      match lhs with
+      | LVar id ->
+        let value = eval_exp env exp1 in
+        eval_exp (ref (Environment.extend id value !env)) exp2
+      | LTuple (id1, id2) ->
+        let value = eval_exp env exp1 in (
+          match value with
+          | TupleV (v1, v2) ->
+              eval_exp (ref (Environment.extend id1 v1 (Environment.extend id2 v2 !env))) exp2
+          | _ -> err "Value must be a tuple: let"
+        )
+  )
   | FunExp (id, exp) -> ProcV (id, exp, env)
   | DFunExp (id, exp) -> DProcV (id, exp)
   | AppExp (exp1, exp2) -> (

@@ -124,14 +124,28 @@ let rec ty_exp tyenv = function
   | DFunExp (id, body) ->
       (* TODO: nantokasuru *)
       ty_exp tyenv (FunExp (id, body))
-  | LetExp (id, exp1, exp2) ->
-      let s1, ty1 = ty_exp tyenv exp1 in
-      let tysc1 = closure ty1 tyenv s1 in
-      let newenv = Environment.extend id tysc1 tyenv in
-      let s2, ty2 = ty_exp newenv exp2 in
-      let eqs = eqs_of_subst s1 @ eqs_of_subst s2 in
-      let s3 = unify eqs in
-      (s3, subst_type s3 ty2)
+  | LetExp (lhs, exp1, exp2) -> (
+      match lhs with
+      | LVar id ->
+        let s1, ty1 = ty_exp tyenv exp1 in
+        let tysc1 = closure ty1 tyenv s1 in
+        let newenv = Environment.extend id tysc1 tyenv in
+        let s2, ty2 = ty_exp newenv exp2 in
+        let eqs = eqs_of_subst s1 @ eqs_of_subst s2 in
+        let s3 = unify eqs in
+        (s3, subst_type s3 ty2)
+      | LTuple (id1, id2) ->
+        let s1, ty1 = ty_exp tyenv exp1 in
+        let tyv1 = TyVar (fresh_tyvar ()) in
+        let tyv2 = TyVar (fresh_tyvar ()) in
+        let tysc1 = tysc_of_ty tyv1 in
+        let tysc2 = tysc_of_ty tyv2 in
+        let newenv = Environment.extend id1 tysc1 (Environment.extend id2 tysc2 tyenv) in
+        let s2, ty2 = ty_exp newenv exp2 in
+        let eqs = (TyTuple (tyv1, tyv2), ty1) :: eqs_of_subst s1 @ eqs_of_subst s2 in
+        let s3 = unify eqs in
+        (s3, subst_type s3 ty2)
+  )
   | LetRecExp (id, para, exp1, exp2) ->
       let ty_para = TyVar (fresh_tyvar ()) in
       let ty_fun = TyFun (ty_para, TyVar (fresh_tyvar ())) in

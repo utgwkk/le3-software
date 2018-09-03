@@ -86,6 +86,10 @@ type id = string
 
 type binOp = Plus | Mult | Lt | And | Or | Cons
 
+type lhsval =
+  | LVar of id
+  | LTuple of id * id
+
 type exp =
   | Var of id
   | ILit of int
@@ -94,7 +98,7 @@ type exp =
   | BinOp of binOp * exp * exp
   | LazyBinOp of binOp * exp * exp
   | IfExp of exp * exp * exp
-  | LetExp of id * exp * exp
+  | LetExp of lhsval * exp * exp
   | FunExp of id * exp
   | DFunExp of id * exp
   | AppExp of exp * exp
