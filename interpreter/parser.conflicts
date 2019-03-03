@@ -1,0 +1,644 @@
+
+** Conflict (shift/reduce) in state 124.
+** Token involved: DOT
+** This state is reached from toplevel after reading:
+
+FUN ID RARROW RECUR AExpr 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+toplevel 
+Expr SEMISEMI 
+OrExpr 
+AndExpr 
+LTExpr 
+ConsExpr LT ConsExpr 
+PExpr CONS ConsExpr 
+MExpr 
+AppExpr 
+AExpr 
+(?)
+
+** In state 124, looking ahead at DOT, shifting is permitted
+** because of the following sub-derivation:
+
+ExpandExpr 
+FunExpr 
+FUN FunBodyExpr 
+    ID RARROW Expr 
+              OrExpr 
+              AndExpr 
+              LTExpr 
+              ConsExpr LT ConsExpr 
+              PExpr CONS ConsExpr 
+              MExpr 
+              AppExpr 
+              RECUR AExpr 
+                    AExpr . DOT INTV 
+
+** In state 124, looking ahead at DOT, reducing production
+** AppExpr -> RECUR AExpr 
+** is permitted because of the following sub-derivation:
+
+AExpr DOT INTV // lookahead token appears
+ExpandExpr // lookahead token is inherited
+FunExpr // lookahead token is inherited
+FUN FunBodyExpr // lookahead token is inherited
+    ID RARROW Expr // lookahead token is inherited
+              OrExpr // lookahead token is inherited
+              AndExpr // lookahead token is inherited
+              LTExpr // lookahead token is inherited
+              ConsExpr // lookahead token is inherited
+              PExpr // lookahead token is inherited
+              MExpr // lookahead token is inherited
+              AppExpr // lookahead token is inherited
+              RECUR AExpr . 
+
+** Conflict (shift/reduce) in state 62.
+** Token involved: AND
+** This state is reached from toplevel after reading:
+
+FUN ID RARROW AndExpr 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+toplevel 
+Expr SEMISEMI 
+OrExpr 
+AndExpr 
+(?)
+
+** In state 62, looking ahead at AND, shifting is permitted
+** because of the following sub-derivation:
+
+LTExpr 
+ConsExpr LT ConsExpr 
+PExpr CONS ConsExpr 
+MExpr 
+AppExpr 
+AExpr 
+ExpandExpr 
+FunExpr 
+FUN FunBodyExpr 
+    ID RARROW Expr 
+              OrExpr 
+              AndExpr 
+              AndExpr . AND LTExpr 
+
+** In state 62, looking ahead at AND, reducing production
+** OrExpr -> AndExpr 
+** is permitted because of the following sub-derivation:
+
+AndExpr AND LTExpr // lookahead token appears
+LTExpr // lookahead token is inherited
+ConsExpr // lookahead token is inherited
+PExpr // lookahead token is inherited
+MExpr // lookahead token is inherited
+AppExpr // lookahead token is inherited
+AExpr // lookahead token is inherited
+ExpandExpr // lookahead token is inherited
+FunExpr // lookahead token is inherited
+FUN FunBodyExpr // lookahead token is inherited
+    ID RARROW Expr // lookahead token is inherited
+              OrExpr // lookahead token is inherited
+              AndExpr . 
+
+** Conflict (shift/reduce) in state 57.
+** Token involved: AND
+** This state is reached from toplevel after reading:
+
+FUN ID RARROW OrExpr OR AndExpr 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+toplevel 
+Expr SEMISEMI 
+OrExpr 
+AndExpr 
+(?)
+
+** In state 57, looking ahead at AND, shifting is permitted
+** because of the following sub-derivation:
+
+LTExpr 
+ConsExpr LT ConsExpr 
+PExpr CONS ConsExpr 
+MExpr 
+AppExpr 
+AExpr 
+ExpandExpr 
+FunExpr 
+FUN FunBodyExpr 
+    ID RARROW Expr 
+              OrExpr 
+              OrExpr OR AndExpr 
+                        AndExpr . AND LTExpr 
+
+** In state 57, looking ahead at AND, reducing production
+** OrExpr -> OrExpr OR AndExpr 
+** is permitted because of the following sub-derivation:
+
+AndExpr AND LTExpr // lookahead token appears
+LTExpr // lookahead token is inherited
+ConsExpr // lookahead token is inherited
+PExpr // lookahead token is inherited
+MExpr // lookahead token is inherited
+AppExpr // lookahead token is inherited
+AExpr // lookahead token is inherited
+ExpandExpr // lookahead token is inherited
+FunExpr // lookahead token is inherited
+FUN FunBodyExpr // lookahead token is inherited
+    ID RARROW Expr // lookahead token is inherited
+              OrExpr // lookahead token is inherited
+              OrExpr OR AndExpr . 
+
+** Conflict (shift/reduce) in state 54.
+** Token involved: LT
+** This state is reached from toplevel after reading:
+
+FUN ID RARROW ConsExpr 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+toplevel 
+Expr SEMISEMI 
+OrExpr 
+AndExpr 
+LTExpr 
+(?)
+
+** In state 54, looking ahead at LT, shifting is permitted
+** because of the following sub-derivation:
+
+ConsExpr LT ConsExpr 
+PExpr CONS ConsExpr 
+MExpr 
+AppExpr 
+AExpr 
+ExpandExpr 
+FunExpr 
+FUN FunBodyExpr 
+    ID RARROW Expr 
+              OrExpr 
+              AndExpr 
+              LTExpr 
+              ConsExpr . LT ConsExpr 
+
+** In state 54, looking ahead at LT, reducing production
+** LTExpr -> ConsExpr 
+** is permitted because of the following sub-derivation:
+
+ConsExpr LT ConsExpr // lookahead token appears
+PExpr // lookahead token is inherited
+MExpr // lookahead token is inherited
+AppExpr // lookahead token is inherited
+AExpr // lookahead token is inherited
+ExpandExpr // lookahead token is inherited
+FunExpr // lookahead token is inherited
+FUN FunBodyExpr // lookahead token is inherited
+    ID RARROW Expr // lookahead token is inherited
+              OrExpr // lookahead token is inherited
+              AndExpr // lookahead token is inherited
+              LTExpr // lookahead token is inherited
+              ConsExpr . 
+
+** Conflict (shift/reduce) in state 51.
+** Token involved: OR
+** This state is reached from toplevel after reading:
+
+FUN ID RARROW OrExpr 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+toplevel 
+Expr SEMISEMI 
+OrExpr 
+(?)
+
+** In state 51, looking ahead at OR, reducing production
+** Expr -> OrExpr 
+** is permitted because of the following sub-derivation:
+
+OrExpr OR AndExpr // lookahead token appears
+AndExpr // lookahead token is inherited
+LTExpr // lookahead token is inherited
+ConsExpr // lookahead token is inherited
+PExpr // lookahead token is inherited
+MExpr // lookahead token is inherited
+AppExpr // lookahead token is inherited
+AExpr // lookahead token is inherited
+ExpandExpr // lookahead token is inherited
+FunExpr // lookahead token is inherited
+FUN FunBodyExpr // lookahead token is inherited
+    ID RARROW Expr // lookahead token is inherited
+              OrExpr . 
+
+** In state 51, looking ahead at OR, shifting is permitted
+** because of the following sub-derivation:
+
+AndExpr 
+LTExpr 
+ConsExpr LT ConsExpr 
+PExpr CONS ConsExpr 
+MExpr 
+AppExpr 
+AExpr 
+ExpandExpr 
+FunExpr 
+FUN FunBodyExpr 
+    ID RARROW Expr 
+              OrExpr 
+              OrExpr . OR AndExpr 
+
+** Conflict (shift/reduce) in state 49.
+** Token involved: MULT
+** This state is reached from toplevel after reading:
+
+FUN ID RARROW MExpr 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+toplevel 
+Expr SEMISEMI 
+OrExpr 
+AndExpr 
+LTExpr 
+ConsExpr LT ConsExpr 
+PExpr CONS ConsExpr 
+MExpr 
+(?)
+
+** In state 49, looking ahead at MULT, shifting is permitted
+** because of the following sub-derivation:
+
+AppExpr 
+AExpr 
+ExpandExpr 
+FunExpr 
+FUN FunBodyExpr 
+    ID RARROW Expr 
+              OrExpr 
+              AndExpr 
+              LTExpr 
+              ConsExpr LT ConsExpr 
+              PExpr CONS ConsExpr 
+              MExpr 
+              MExpr . MULT AppExpr 
+
+** In state 49, looking ahead at MULT, reducing production
+** PExpr -> MExpr 
+** is permitted because of the following sub-derivation:
+
+MExpr MULT AppExpr // lookahead token appears
+AppExpr // lookahead token is inherited
+AExpr // lookahead token is inherited
+ExpandExpr // lookahead token is inherited
+FunExpr // lookahead token is inherited
+FUN FunBodyExpr // lookahead token is inherited
+    ID RARROW Expr // lookahead token is inherited
+              OrExpr // lookahead token is inherited
+              AndExpr // lookahead token is inherited
+              LTExpr // lookahead token is inherited
+              ConsExpr // lookahead token is inherited
+              PExpr // lookahead token is inherited
+              MExpr . 
+
+** Conflict (shift/reduce) in state 47.
+** Tokens involved: TRUE MATCH LPAREN LLPAREN LET INTV IF ID FUN FALSE DFUN
+** The following explanations concentrate on token TRUE.
+** This state is reached from toplevel after reading:
+
+FUN ID RARROW AppExpr 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+toplevel 
+Expr SEMISEMI 
+OrExpr 
+AndExpr 
+LTExpr 
+ConsExpr LT ConsExpr 
+PExpr CONS ConsExpr 
+MExpr 
+AppExpr 
+(?)
+
+** In state 47, looking ahead at TRUE, shifting is permitted
+** because of the following sub-derivation:
+
+AExpr 
+ExpandExpr 
+FunExpr 
+FUN FunBodyExpr 
+    ID RARROW Expr 
+              OrExpr 
+              AndExpr 
+              LTExpr 
+              ConsExpr LT ConsExpr 
+              PExpr CONS ConsExpr 
+              MExpr 
+              AppExpr 
+              AppExpr AExpr 
+                      . TRUE 
+
+** In state 47, looking ahead at TRUE, reducing production
+** MExpr -> AppExpr 
+** is permitted because of the following sub-derivation:
+
+AppExpr AExpr // lookahead token appears because AExpr can begin with TRUE
+AExpr // lookahead token is inherited
+ExpandExpr // lookahead token is inherited
+FunExpr // lookahead token is inherited
+FUN FunBodyExpr // lookahead token is inherited
+    ID RARROW Expr // lookahead token is inherited
+              OrExpr // lookahead token is inherited
+              AndExpr // lookahead token is inherited
+              LTExpr // lookahead token is inherited
+              ConsExpr // lookahead token is inherited
+              PExpr // lookahead token is inherited
+              MExpr // lookahead token is inherited
+              AppExpr . 
+
+** Conflict (shift/reduce) in state 46.
+** Token involved: DOT
+** This state is reached from toplevel after reading:
+
+FUN ID RARROW AExpr 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+toplevel 
+Expr SEMISEMI 
+OrExpr 
+AndExpr 
+LTExpr 
+ConsExpr LT ConsExpr 
+PExpr CONS ConsExpr 
+MExpr 
+AppExpr 
+AExpr 
+(?)
+
+** In state 46, looking ahead at DOT, shifting is permitted
+** because of the following sub-derivation:
+
+ExpandExpr 
+FunExpr 
+FUN FunBodyExpr 
+    ID RARROW Expr 
+              OrExpr 
+              AndExpr 
+              LTExpr 
+              ConsExpr LT ConsExpr 
+              PExpr CONS ConsExpr 
+              MExpr 
+              AppExpr 
+              AExpr 
+              AExpr . DOT INTV 
+
+** In state 46, looking ahead at DOT, reducing production
+** AppExpr -> AExpr 
+** is permitted because of the following sub-derivation:
+
+AExpr DOT INTV // lookahead token appears
+ExpandExpr // lookahead token is inherited
+FunExpr // lookahead token is inherited
+FUN FunBodyExpr // lookahead token is inherited
+    ID RARROW Expr // lookahead token is inherited
+              OrExpr // lookahead token is inherited
+              AndExpr // lookahead token is inherited
+              LTExpr // lookahead token is inherited
+              ConsExpr // lookahead token is inherited
+              PExpr // lookahead token is inherited
+              MExpr // lookahead token is inherited
+              AppExpr // lookahead token is inherited
+              AExpr . 
+
+** Conflict (shift/reduce) in state 43.
+** Token involved: DOT
+** This state is reached from toplevel after reading:
+
+FUN ID RARROW AppExpr AExpr 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+toplevel 
+Expr SEMISEMI 
+OrExpr 
+AndExpr 
+LTExpr 
+ConsExpr LT ConsExpr 
+PExpr CONS ConsExpr 
+MExpr 
+AppExpr 
+AExpr 
+(?)
+
+** In state 43, looking ahead at DOT, shifting is permitted
+** because of the following sub-derivation:
+
+ExpandExpr 
+FunExpr 
+FUN FunBodyExpr 
+    ID RARROW Expr 
+              OrExpr 
+              AndExpr 
+              LTExpr 
+              ConsExpr LT ConsExpr 
+              PExpr CONS ConsExpr 
+              MExpr 
+              AppExpr 
+              AppExpr AExpr 
+                      AExpr . DOT INTV 
+
+** In state 43, looking ahead at DOT, reducing production
+** AppExpr -> AppExpr AExpr 
+** is permitted because of the following sub-derivation:
+
+AExpr DOT INTV // lookahead token appears
+ExpandExpr // lookahead token is inherited
+FunExpr // lookahead token is inherited
+FUN FunBodyExpr // lookahead token is inherited
+    ID RARROW Expr // lookahead token is inherited
+              OrExpr // lookahead token is inherited
+              AndExpr // lookahead token is inherited
+              LTExpr // lookahead token is inherited
+              ConsExpr // lookahead token is inherited
+              PExpr // lookahead token is inherited
+              MExpr // lookahead token is inherited
+              AppExpr // lookahead token is inherited
+              AppExpr AExpr . 
+
+** Conflict (shift/reduce) in state 42.
+** Tokens involved: TRUE MATCH LPAREN LLPAREN LET INTV IF ID FUN FALSE DFUN
+** The following explanations concentrate on token TRUE.
+** This state is reached from toplevel after reading:
+
+FUN ID RARROW MExpr MULT AppExpr 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+toplevel 
+Expr SEMISEMI 
+OrExpr 
+AndExpr 
+LTExpr 
+ConsExpr LT ConsExpr 
+PExpr CONS ConsExpr 
+MExpr 
+AppExpr 
+(?)
+
+** In state 42, looking ahead at TRUE, shifting is permitted
+** because of the following sub-derivation:
+
+AExpr 
+ExpandExpr 
+FunExpr 
+FUN FunBodyExpr 
+    ID RARROW Expr 
+              OrExpr 
+              AndExpr 
+              LTExpr 
+              ConsExpr LT ConsExpr 
+              PExpr CONS ConsExpr 
+              MExpr 
+              MExpr MULT AppExpr 
+                         AppExpr AExpr 
+                                 . TRUE 
+
+** In state 42, looking ahead at TRUE, reducing production
+** MExpr -> MExpr MULT AppExpr 
+** is permitted because of the following sub-derivation:
+
+AppExpr AExpr // lookahead token appears because AExpr can begin with TRUE
+AExpr // lookahead token is inherited
+ExpandExpr // lookahead token is inherited
+FunExpr // lookahead token is inherited
+FUN FunBodyExpr // lookahead token is inherited
+    ID RARROW Expr // lookahead token is inherited
+              OrExpr // lookahead token is inherited
+              AndExpr // lookahead token is inherited
+              LTExpr // lookahead token is inherited
+              ConsExpr // lookahead token is inherited
+              PExpr // lookahead token is inherited
+              MExpr // lookahead token is inherited
+              MExpr MULT AppExpr . 
+
+** Conflict (shift/reduce) in state 34.
+** Token involved: MULT
+** This state is reached from toplevel after reading:
+
+FUN ID RARROW PExpr PLUS MExpr 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+toplevel 
+Expr SEMISEMI 
+OrExpr 
+AndExpr 
+LTExpr 
+ConsExpr LT ConsExpr 
+PExpr CONS ConsExpr 
+MExpr 
+(?)
+
+** In state 34, looking ahead at MULT, shifting is permitted
+** because of the following sub-derivation:
+
+AppExpr 
+AExpr 
+ExpandExpr 
+FunExpr 
+FUN FunBodyExpr 
+    ID RARROW Expr 
+              OrExpr 
+              AndExpr 
+              LTExpr 
+              ConsExpr LT ConsExpr 
+              PExpr CONS ConsExpr 
+              PExpr PLUS MExpr 
+                         MExpr . MULT AppExpr 
+
+** In state 34, looking ahead at MULT, reducing production
+** PExpr -> PExpr PLUS MExpr 
+** is permitted because of the following sub-derivation:
+
+MExpr MULT AppExpr // lookahead token appears
+AppExpr // lookahead token is inherited
+AExpr // lookahead token is inherited
+ExpandExpr // lookahead token is inherited
+FunExpr // lookahead token is inherited
+FUN FunBodyExpr // lookahead token is inherited
+    ID RARROW Expr // lookahead token is inherited
+              OrExpr // lookahead token is inherited
+              AndExpr // lookahead token is inherited
+              LTExpr // lookahead token is inherited
+              ConsExpr // lookahead token is inherited
+              PExpr // lookahead token is inherited
+              PExpr PLUS MExpr . 
+
+** Conflict (shift/reduce) in state 31.
+** Tokens involved: PLUS CONS
+** The following explanations concentrate on token PLUS.
+** This state is reached from toplevel after reading:
+
+FUN ID RARROW PExpr 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+toplevel 
+Expr SEMISEMI 
+OrExpr 
+AndExpr 
+LTExpr 
+ConsExpr LT ConsExpr 
+PExpr CONS ConsExpr 
+(?)
+
+** In state 31, looking ahead at PLUS, reducing production
+** ConsExpr -> PExpr 
+** is permitted because of the following sub-derivation:
+
+PExpr PLUS MExpr // lookahead token appears
+MExpr // lookahead token is inherited
+AppExpr // lookahead token is inherited
+AExpr // lookahead token is inherited
+ExpandExpr // lookahead token is inherited
+FunExpr // lookahead token is inherited
+FUN FunBodyExpr // lookahead token is inherited
+    ID RARROW Expr // lookahead token is inherited
+              OrExpr // lookahead token is inherited
+              AndExpr // lookahead token is inherited
+              LTExpr // lookahead token is inherited
+              ConsExpr // lookahead token is inherited
+              PExpr . 
+
+** In state 31, looking ahead at PLUS, shifting is permitted
+** because of the following sub-derivation:
+
+MExpr 
+AppExpr 
+AExpr 
+ExpandExpr 
+FunExpr 
+FUN FunBodyExpr 
+    ID RARROW Expr 
+              OrExpr 
+              AndExpr 
+              LTExpr 
+              ConsExpr LT ConsExpr 
+              PExpr CONS ConsExpr 
+              PExpr . PLUS MExpr 

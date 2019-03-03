@@ -154,14 +154,12 @@ let rec ty_exp tyenv = function
           (Environment.extend para (tysc_of_ty ty_para) tyenv)
       in
       let s1, ty1 = ty_exp funenv exp1 in
-      let tysc = closure (subst_type s1 (TyFun (ty_para, ty1))) tyenv s1 in
+      let eqs = (ty_fun, TyFun (ty_para, ty1)) :: eqs_of_subst s1 in
+      let s2 = unify eqs in
+      let tysc = closure (subst_type s2 ty_fun) tyenv s1 in
       let inenv = Environment.extend id tysc tyenv in
-      let s2, ty2 = ty_exp inenv exp2 in
-      let eqs =
-        (ty_fun, TyFun (ty_para, ty1)) :: eqs_of_subst s1 @ eqs_of_subst s2
-      in
-      let s3 = unify eqs in
-      (s3, subst_type s3 ty2)
+      let s3, ty2 = ty_exp inenv exp2 in
+      (s3, ty2)
   | AppExp (exp1, exp2) ->
       let s1, ty_fun = ty_exp tyenv exp1 in
       let s2, ty_arg = ty_exp tyenv exp2 in
